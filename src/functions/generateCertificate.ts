@@ -33,14 +33,26 @@ export const handle = async (event) => {
   
   const { id, name, grade } = JSON.parse(event.body) as ICreateCertificate;
 
-  await document.put({
+  const response = await document.query({
     TableName: "users_certificates",
-    Item: {
-      id,
-      name,
-      grade
-    },
+    KeyConditionExpression: "id = :id",
+    ExpressionAttributeValues: {
+      ":id": id
+    }
   }).promise();
+
+  const userAlreadyExists = response.Items[0];
+
+  if (!userAlreadyExists) {
+    await document.put({
+      TableName: "users_certificates",
+      Item: {
+        id,
+        name,
+        grade
+      },
+    }).promise();
+  }
 
   const medalPath = path.join(process.cwd(), "src", "templates", "selo.png");
   const medal = fs.readFileSync(medalPath, "base64");
@@ -89,7 +101,8 @@ export const handle = async (event) => {
   return {
     statusCode: 201,
     body: JSON.stringify({
-      message: "  Certificate created!"
+      message: "Certificate created!",
+      url: `https://serverlesscertificatesignite1.s3.amazonaws.com/${id}.pdf`,
     }),
     headers: {
       "Content-type": "application/json",
