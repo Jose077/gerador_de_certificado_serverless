@@ -19,9 +19,9 @@ export const handle: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Certificate valided!",
+        message: "Certificado válido!!",
         name: userCertificate.name,
-        url: `https://serverlesscertificatesignite1.s3.amazonaws.com/${id}.pdf`,
+        url: `https://serverlesscertificatesand.s3.amazonaws.com/${id}.pdf`,
       }),
     };
   }
@@ -29,7 +29,7 @@ export const handle: APIGatewayProxyHandler = async (event) => {
   return {
     statusCode: 400,
     body: JSON.stringify({
-      message: "Certificate invalided!",
+      message: "Certificado invalido!",
     }),
   };
 }
